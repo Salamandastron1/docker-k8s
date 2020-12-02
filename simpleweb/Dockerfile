@@ -3,10 +3,11 @@ FROM node:alpine
 
 WORKDIR /usr/app
 
-# Install some depenendencies
+# Breaking out company to reduce dependecy refresh
 COPY ./package.json ./
 RUN npm install
+
+# Move primary application code into container
 COPY ./ ./
 
-# Default command
-CMD ["npm", "start"]
+CMD [ "npm", "start" ]
