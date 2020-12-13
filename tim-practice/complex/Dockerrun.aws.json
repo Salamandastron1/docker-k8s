@@ -1,0 +1,83 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "regalme/multi-client",
+            "hostname": "client",
+            "essential": false,
+            "memory": 128
+        },
+        {
+            "name": "server",
+            "image": "regalme/multi-server",
+            "hostname": "api",
+            "essential": false,
+            "memory": 128,
+            "environment": [
+                {
+                    "name": "REDIS_HOST",
+                    "value": "multi-docker-redis.nt5h7s.0001.use2.cache.amazonaws.com"
+                },
+                {
+                    "name": "REDIS_PORT",
+                    "value": "6379"
+                },
+                {
+                    "name": "PGUSER",
+                    "value": "postgres"
+                },
+                {
+                    "name": "PGHOST",
+                    "value": "multi-docker-db.c5sslovz4zgn.us-east-2.rds.amazonaws.com"
+                },
+                {
+                    "name": "PGDATABASE",
+                    "value": "fibvalues"
+                },
+                {
+                    "name": "PGPASSWORD",
+                    "value": "postgres_password"
+                },
+                {
+                    "name": "PGPORT",
+                    "value": "5432"
+                }
+            ]
+        },
+        {
+            "name": "worker",
+            "image": "regalme/multi-worker",
+            "hostname": "worker",
+            "essential": false,
+            "memory": 128,
+            "environment": [
+                {
+                    "name": "REDIS_HOST",
+                    "value": "multi-docker-redis.nt5h7s.0001.use2.cache.amazonaws.com"
+                },
+                {
+                    "name": "REDIS_PORT",
+                    "value": "6379"
+                }
+            ]
+        },
+        {
+            "name": "nginx",
+            "image": "regalme/multi-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostport": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": [
+                "client",
+                "server"
+            ]
+        }
+    ]
+}
